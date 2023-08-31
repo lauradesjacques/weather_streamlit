@@ -50,15 +50,18 @@ def fetch_data_city(latitude, longitude):
         return st.error("ERROR !")
 # ==================================================================================>
 def map_city(latitude, longitude, city):
-    st.header("City Location on Map 🗺️")
+    st.header(f"Localisation de {city} avec la Map 🗺️")
     map_center = [latitude, longitude]
     m = folium.Map(location=map_center, zoom_start=10)
     folium.Marker(map_center, popup=city.capitalize()).add_to(m)
     folium_static(m) 
 # ==================================================================================>
 def main():
+    
+    # Background
     background_front(url="https://medias.objectifgard.com/api/v1/images/view/6363e8dcb8e2787e72787ae6/article/image.jpg")
-    # INPUT CITY.
+    
+    # input city.
     name_of_city = st.text_input("Rechercher une ville...")
     
     if not name_of_city == "":
@@ -108,7 +111,6 @@ def main():
         except:
             st.error("Ville introuvable ou inexistante")
             
-
 main()
 
 
