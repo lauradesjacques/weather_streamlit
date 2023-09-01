@@ -1,4 +1,4 @@
-# IMPORTS
+# =================================IMPORT===========================================>
 import streamlit as st
 import folium
 from utils import *
@@ -7,13 +7,9 @@ import requests
 from dotenv import load_dotenv
 import folium
 from streamlit_folium import folium_static
-
-
-# st.set_page_config(layout="wide")
-# st.title('weather forecast by city')
-# st.map()
-
-# COORDONEES PARIS latitude=48.866667, longitude=2.333333
+# =================================HEADER===========================================>
+st.set_page_config(layout="wide")
+st.title('weather forecast by city')
 
 # ==================================================================================>
 def fetch_data_city_locality(city):
@@ -24,7 +20,7 @@ def fetch_data_city_locality(city):
     if response.status_code == 200:
         data = response.json()
         longitude = data[0]["lat"]
-        latitude  = data[0]["lon"] 
+        latitude  = data[0]["lon"]
         return longitude, latitude
     else:
         return st.error("ERROR !")
@@ -33,7 +29,7 @@ def fetch_data_city(latitude, longitude):
     load_dotenv('.env')
     key=os.environ['KEY']
     URL = f"https://api.openweathermap.org/data/2.5/weather?lat={latitude}&lon={longitude}&appid={key}"
-    response = requests.get(URL) 
+    response = requests.get(URL)
     if response.status_code == 200:
         data = response.json()
         data = {
@@ -54,25 +50,25 @@ def map_city(latitude, longitude, city):
     map_center = [latitude, longitude]
     m = folium.Map(location=map_center, zoom_start=10)
     folium.Marker(map_center, popup=city.capitalize()).add_to(m)
-    folium_static(m) 
+    folium_static(m)
 # ==================================================================================>
 def main():
-    
+
     # Background
     background_front(url="https://medias.objectifgard.com/api/v1/images/view/6363e8dcb8e2787e72787ae6/article/image.jpg")
-    
+
     # input city.
     name_of_city = st.text_input("Rechercher une ville...")
-    
+
     if not name_of_city == "":
-        
+
         try:
             # Récupérationn de la localisation de la ville choisis.
             longitude, latitude = fetch_data_city_locality(city=name_of_city)
 
             # Récupération de la météo de la ville choisis.
             data = fetch_data_city(latitude, longitude)
-            
+
             # Style CSS.
             st.markdown("""
             <style>
@@ -101,26 +97,14 @@ def main():
                 <p>Visibility  : {data["visibility"]} </p>
                 <p>Sunrise     : {data["sunrise"]}    </p>
                 <p>Sunset      : {data["sunset"]}     </p>
-            </div>''', 
+            </div>''',
             unsafe_allow_html=True
             )
-            
+
             # Affichage de la map
             map_city(latitude=longitude, longitude=latitude, city=name_of_city)
-            
+
         except:
             st.error("Ville introuvable ou inexistante")
-            
+
 main()
-
-
-
-
-
-
-
-
-# CARD_2_PREDICTION
-# st.markdown('<div class="card"><div class="header">Forecast 8 days</div><p>Day 1 </p><p>Day2</p> <p>Day3</p><p>Day4</p></div>', unsafe_allow_html=True)
-# <p>Weather     : {data["weather"]}        </p>
-# <p>Wind        : {data["wind"]}           </p> 
